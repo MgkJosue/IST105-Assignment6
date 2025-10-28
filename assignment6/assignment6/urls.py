@@ -1,9 +1,7 @@
-from django.urls import path
-from . import views
-
-app_name = 'bitwise'
+from django.contrib import admin
+from django.urls import path, include
 
 urlpatterns = [
-    path('', views.index, name='index'),
-    path('history/', views.history, name='history'),
+    path('admin/', admin.site.urls),
+    path('', include('bitwise.urls')),
 ]
