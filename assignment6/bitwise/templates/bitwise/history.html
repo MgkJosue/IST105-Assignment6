@@ -1,0 +1,52 @@
+{% extends 'bitwise/base.html' %}
+
+{% block title %}Calculation History{% endblock %}
+
+{% block content %}
+<div class="row mt-5">
+    <div class="col-md-12">
+        <h2>Calculation History</h2>
+        
+        {% if error %}
+            <div class="alert alert-danger">
+                Error connecting to MongoDB: {{ error }}
+            </div>
+        {% endif %}
+
+        {% if entries %}
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Timestamp</th>
+                            <th>Inputs</th>
+                            <th>Average</th>
+                            <th>Positive Count</th>
+                            <th>Values > 10</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for entry in entries %}
+                        <tr>
+                            <td>{{ entry.timestamp|date:"Y-m-d H:i:s" }}</td>
+                            <td>
+                                a={{ entry.input.a }}, 
+                                b={{ entry.input.b }}, 
+                                c={{ entry.input.c }}, 
+                                d={{ entry.input.d }}, 
+                                e={{ entry.input.e }}
+                            </td>
+                            <td>{{ entry.results.average }}</td>
+                            <td>{{ entry.results.positive_count }}</td>
+                            <td>{{ entry.results.greater_than_10 }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info">No calculations saved yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

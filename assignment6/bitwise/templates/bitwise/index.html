@@ -1,0 +1,82 @@
+{% extends 'bitwise/base.html' %}
+
+{% block title %}Number Processor{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3>Enter Five Numbers</h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">
+                            {{ form.non_field_errors }}
+                        </div>
+                    {% endif %}
+
+                    {% for field in form %}
+                        <div class="mb-3">
+                            {{ field.label_tag }}
+                            {{ field }}
+                            {% if field.errors %}
+                                <div class="alert alert-warning mt-1">
+                                    {{ field.errors }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-primary">Calculate</button>
+                </form>
+
+                {% if results %}
+                <div class="result-box">
+                    <h4>Results:</h4>
+                    
+                    <p><strong>Original Values:</strong> {{ results.original_numbers }}</p>
+                    
+                    <p><strong>Sorted Values (greater than 10):</strong> {{ results.greater_than_10 }}</p>
+                    
+                    <p><strong>Average:</strong> {{ results.average }}
+                        {% if results.average_greater_than_50 %}
+                            <span class="badge bg-success">Greater than 50</span>
+                        {% else %}
+                            <span class="badge bg-warning">Not greater than 50</span>
+                        {% endif %}
+                    </p>
+                    
+                    <p><strong>Count of positive numbers:</strong> {{ results.positive_count }}
+                        {% if results.positive_count_is_even %}
+                            <span class="badge bg-info">Even (bitwise check)</span>
+                        {% else %}
+                            <span class="badge bg-secondary">Odd (bitwise check)</span>
+                        {% endif %}
+                    </p>
+
+                    {% if results.has_negatives %}
+                        <div class="alert alert-warning">
+                            <strong>Warning:</strong> Negative numbers detected: {{ results.negative_numbers }}
+                        </div>
+                    {% endif %}
+
+                    {% if results.saved %}
+                        <div class="alert alert-success mt-3">
+                            ✓ Results saved to MongoDB
+                        </div>
+                    {% elif results.saved == False %}
+                        <div class="alert alert-danger mt-3">
+                            ✗ Error saving to MongoDB: {{ results.error }}
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
